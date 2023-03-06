@@ -5,6 +5,7 @@ import ru.otus.homework.strelkov.dao.QuestionDao;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.service.exception.QuestionsFileNotFoundException;
+import ru.otus.homework.strelkov.service.exception.QuestionsFileReadException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 .map(q -> generateQuestionWithAnswerOptions(q.split(SEMICOLON_SEPARATOR)))
                 .collect(Collectors.toList());
         } catch (IOException ex) {
-            throw new RuntimeException("Error while trying to read questions file from resources, errMsg: " + ex.getMessage(), ex);
+            throw new QuestionsFileReadException("Error while trying to read questions file from resources.", ex);
         }
     }
 
