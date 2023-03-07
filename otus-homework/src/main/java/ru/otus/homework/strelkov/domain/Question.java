@@ -3,7 +3,7 @@ package ru.otus.homework.strelkov.domain;
 import lombok.NonNull;
 import lombok.Value;
 
-import java.util.List;
+import java.util.Map;
 
 @Value
 public class Question {
@@ -12,5 +12,5 @@ public class Question {
     String question;
 
     @NonNull
-    List<AnswerOption> answerOptions;
+    Map<Integer, AnswerOption> answerOptionByAnswerNum;
 }
