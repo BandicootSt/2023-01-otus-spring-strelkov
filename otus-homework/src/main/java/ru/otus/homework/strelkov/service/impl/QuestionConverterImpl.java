@@ -1,21 +1,21 @@
 package ru.otus.homework.strelkov.service.impl;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.service.QuestionConverter;
 
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class QuestionConverterImpl implements QuestionConverter {
 
     @Override
     public String convertQuestion(Question question) {
         return question.getQuestion() +
             "\n\t" +
-            question.getAnswerOptionByAnswerNum().entrySet()
+            question.getAnswerOptions()
                 .stream()
-                .map(answer -> answer.getKey() + ") " + answer.getValue().getOption())
+                .map(answer -> answer.getOptionNum() + ") " + answer.getOption())
                 .collect(Collectors.joining("\n\t"));
     }
 }

@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value
-public class StudentName {
+public class Student {
 
     @NonNull
     String firstName;

@@ -6,6 +6,8 @@ import lombok.Value;
 @Value
 public class AnswerOption {
 
+    int optionNum;
+
     @NonNull
     String option;
 

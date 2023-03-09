@@ -6,64 +6,65 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.service.impl.StudentExamServiceImpl;
 
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class StudentExamServiceImplTest extends TestConfig {
+class StudentExamServiceImplTest {
+
+    private static final int EXAM_PASSING_SCORE = 3;
 
     private static final Question FIRST_QUESTION = new Question(
         "Which US president wrote his own Sherlock Holmes story?",
-        Map.of(
-            1, new AnswerOption("John F. Kennedy", false),
-            2, new AnswerOption("Franklin Roosevelt", true),
-            3, new AnswerOption("Ronald Reagan", false)
+        asList(
+            new AnswerOption(1, "John F. Kennedy", false),
+            new AnswerOption(2, "Franklin Roosevelt", true),
+            new AnswerOption(3, "Ronald Reagan", false)
         )
     );
 
     private static final Question SECOND_QUESTION = new Question(
         "What duty was introduced in the 12th century in England in order to force men to go to war?",
-        Map.of(
-            1, new AnswerOption("Parasitism tax", false),
-            2, new AnswerOption("Cowardice tax", true),
-            3, new AnswerOption("No boots tax", false)
+        asList(
+            new AnswerOption(1, "Parasitism tax", false),
+            new AnswerOption(2, "Cowardice tax", true),
+            new AnswerOption(3, "No boots tax", false)
         )
     );
 
     private static final Question THIRD_QUESTION = new Question(
         "Where did the phrase “money smells like?” come from?",
-        Map.of(
-            1, new AnswerOption("Perfume bearer", false),
-            2, new AnswerOption("Unwashed socks charge", false),
-            3, new AnswerOption("Toilet tax", true)
+        asList(
+            new AnswerOption(1, "Perfume bearer", false),
+            new AnswerOption(2, "Unwashed socks charge", false),
+            new AnswerOption(3, "Toilet tax", true)
         )
     );
 
     private static final Question FORTH_QUESTION = new Question(
         "The Oscar-winning Russian cartoon is…",
-        Map.of(
-            1, new AnswerOption("The Old Man and the Sea", true),
-            2, new AnswerOption("Prostokvashino", false),
-            3, new AnswerOption("Winnie the Pooh", false)
+        asList(
+            new AnswerOption(1, "The Old Man and the Sea", true),
+            new AnswerOption(2, "Prostokvashino", false),
+            new AnswerOption(3, "Winnie the Pooh", false)
         )
     );
 
     private static final Question FIFTH_QUESTION = new Question(
         "What was the clothing equivalent of money in the Russian Empire?",
-        Map.of(
-            1, new AnswerOption("Fur skins", true),
-            2, new AnswerOption("Cattle", false),
-            3, new AnswerOption("Tobacco", false)
+        asList(
+            new AnswerOption(1, "Fur skins", true),
+            new AnswerOption(2, "Cattle", false),
+            new AnswerOption(3, "Tobacco", false)
         )
     );
 
@@ -81,9 +82,6 @@ class StudentExamServiceImplTest extends TestConfig {
     @Mock
     private QuestionService questionService;
 
-    @Value("${exam.passing.score}")
-    private int passingScore;
-
     @Captor
     private ArgumentCaptor<String> stringCaptor;
 
@@ -96,7 +94,7 @@ class StudentExamServiceImplTest extends TestConfig {
         studentExamService = new StudentExamServiceImpl(
             ioService,
             questionService,
-            passingScore
+            EXAM_PASSING_SCORE
         );
     }
 
@@ -104,9 +102,19 @@ class StudentExamServiceImplTest extends TestConfig {
     public void testExamineStudentSuccess() {
 
         when(ioService.inputString()).thenReturn("Ivanov", "Ivan");
-        when(questionService.printAndReturnQuestions()).thenReturn(TEST_QUESTIONS);
-
+        when(questionService.getQuestions()).thenReturn(TEST_QUESTIONS);
         when(ioService.inputInt()).thenReturn(2, 2, 1, 1, 1);
+
+        when(questionService.getAnswerOption(eq(FIRST_QUESTION), eq(2)))
+            .thenReturn(FIRST_QUESTION.getAnswerOptions().get(1));
+        when(questionService.getAnswerOption(eq(SECOND_QUESTION), eq(2)))
+            .thenReturn(SECOND_QUESTION.getAnswerOptions().get(1));
+        when(questionService.getAnswerOption(eq(THIRD_QUESTION), eq(1)))
+            .thenReturn(THIRD_QUESTION.getAnswerOptions().get(0));
+        when(questionService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
+            .thenReturn(FORTH_QUESTION.getAnswerOptions().get(0));
+        when(questionService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
+            .thenReturn(FIFTH_QUESTION.getAnswerOptions().get(0));
 
         studentExamService.examineStudent();
 
@@ -118,9 +126,20 @@ class StudentExamServiceImplTest extends TestConfig {
     public void testExamineStudentFailed() {
 
         when(ioService.inputString()).thenReturn("Ivanov", "Ivan");
-        when(questionService.printAndReturnQuestions()).thenReturn(TEST_QUESTIONS);
+        when(questionService.getQuestions()).thenReturn(TEST_QUESTIONS);
 
         when(ioService.inputInt()).thenReturn(3, 3, 2, 1, 1);
+
+        when(questionService.getAnswerOption(eq(FIRST_QUESTION), eq(3)))
+            .thenReturn(FIRST_QUESTION.getAnswerOptions().get(2));
+        when(questionService.getAnswerOption(eq(SECOND_QUESTION), eq(3)))
+            .thenReturn(SECOND_QUESTION.getAnswerOptions().get(2));
+        when(questionService.getAnswerOption(eq(THIRD_QUESTION), eq(2)))
+            .thenReturn(THIRD_QUESTION.getAnswerOptions().get(1));
+        when(questionService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
+            .thenReturn(FORTH_QUESTION.getAnswerOptions().get(0));
+        when(questionService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
+            .thenReturn(FIFTH_QUESTION.getAnswerOptions().get(0));
 
         studentExamService.examineStudent();
 

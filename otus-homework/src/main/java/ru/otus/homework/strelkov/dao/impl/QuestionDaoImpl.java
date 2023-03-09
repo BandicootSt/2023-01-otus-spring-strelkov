@@ -10,10 +10,9 @@ import ru.otus.homework.strelkov.service.exception.QuestionsFileReadException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class QuestionDaoImpl implements QuestionDao {
@@ -50,13 +49,16 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @NonNull
     private Question generateQuestionWithAnswerOptions(String[] questionRecord) {
-        Map<Integer, AnswerOption> answerOptionByAnswerNum = new HashMap<>();
-        int correctAnswerOptionNum = Integer.parseInt(questionRecord[CORRECT_ANSWER_CSV_COL_INDEX]);
-        for (int i = 1; i < questionRecord.length - 1; i++) {
-            answerOptionByAnswerNum.put(i, new AnswerOption(questionRecord[i], i == correctAnswerOptionNum));
+        try {
+            List<AnswerOption> answerOptions = new ArrayList<>();
+            int correctAnswerOptionNum = Integer.parseInt(questionRecord[CORRECT_ANSWER_CSV_COL_INDEX]);
+            for (int i = 1; i < questionRecord.length - 1; i++) {
+                answerOptions.add(new AnswerOption(i, questionRecord[i], i == correctAnswerOptionNum));
+            }
+            return new Question(questionRecord[QUESTION_CSV_COL_INDEX], answerOptions);
+        } catch (Exception ex) {
+            throw new QuestionsFileReadException("Failed while trying to parse questions from csv file", ex);
         }
-        return new Question(questionRecord[QUESTION_CSV_COL_INDEX], answerOptionByAnswerNum);
     }
-
 
 }

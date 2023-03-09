@@ -1,15 +1,15 @@
 package ru.otus.homework.strelkov.service.impl;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.strelkov.domain.Question;
-import ru.otus.homework.strelkov.domain.StudentName;
+import ru.otus.homework.strelkov.domain.Student;
 import ru.otus.homework.strelkov.service.IOService;
 import ru.otus.homework.strelkov.service.QuestionService;
 import ru.otus.homework.strelkov.service.StudentExamService;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class StudentExamServiceImpl implements StudentExamService {
@@ -30,30 +30,32 @@ public class StudentExamServiceImpl implements StudentExamService {
 
     @Override
     public void examineStudent() {
-        final StudentName studentName = requestStudentName();
+        final Student student = requestStudentName();
         ioService.outputString("Exam start! Choose one right answer for every question.");
 
-        final List<Question> questions = questionService.printAndReturnQuestions();
-        AtomicInteger score = new AtomicInteger();
+        final List<Question> questions = questionService.getQuestions();
+        int resultScore = 0;
 
-        questions.forEach(q -> {
-            if (q.getAnswerOptionByAnswerNum().get(ioService.inputInt()).isCorrect()) {
-                score.getAndIncrement();
+        for (Question question : questions) {
+            questionService.printQuestion(question);
+
+            if (questionService.getAnswerOption(question, ioService.inputInt()).isCorrect()) {
+                resultScore ++;
             }
-        });
+        }
 
-        if (score.get() >= passingScore) {
-            ioService.outputString("Student: " + studentName + ", Score: " + score.get() + ", Result: Success");
+        if (resultScore >= passingScore) {
+            ioService.outputString("Student: " + student + ", Score: " + resultScore + ", Result: Success");
         } else {
-            ioService.outputString("Student: " + studentName + ", Score: " + score.get() + ", Result: Failed");
+            ioService.outputString("Student: " + student + ", Score: " + resultScore + ", Result: Failed");
         }
     }
 
-    @Override
-    public StudentName requestStudentName() {
+    @NonNull
+    private Student requestStudentName() {
         ioService.outputString("Enter your first name");
         String firstName = ioService.inputString();
         ioService.outputString("Enter your last name");
-        return new StudentName(firstName, ioService.inputString());
+        return new Student(firstName, ioService.inputString());
     }
 }
