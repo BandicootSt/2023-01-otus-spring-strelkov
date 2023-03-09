@@ -27,8 +27,8 @@ public class QuestionDaoImplTest {
                     "Which US president wrote his own Sherlock Holmes story?",
                     asList(
                         new AnswerOption(1,"John F. Kennedy", false),
-                        new AnswerOption(2,"Franklin Roosevelt", true),
-                        new AnswerOption(3,"Ronald Reagan", false)
+                        new AnswerOption(2, "Franklin Roosevelt", true),
+                        new AnswerOption(3, "Ronald Reagan", false)
                     )
                 ),
                 new Question(
@@ -45,6 +45,22 @@ public class QuestionDaoImplTest {
                         new AnswerOption(1,"Perfume bearer", false),
                         new AnswerOption(2,"Unwashed socks charge", false),
                         new AnswerOption(3,"Toilet tax", true)
+                    )
+                ),
+                new Question(
+                    "The Oscar-winning Russian cartoon is…",
+                    asList(
+                        new AnswerOption(1,"The Old Man and the Sea", true),
+                        new AnswerOption(2,"Prostokvashino", false),
+                        new AnswerOption(3,"Winnie the Pooh", false)
+                    )
+                ),
+                new Question(
+                    "What was the clothing equivalent of money in the Russian Empire?",
+                    asList(
+                        new AnswerOption(1,"Fur skins", true),
+                        new AnswerOption(2,"Cattle", false),
+                        new AnswerOption(3,"Tobacco", false)
                     )
                 )
             ),

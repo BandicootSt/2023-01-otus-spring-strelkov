@@ -20,4 +20,14 @@ public class IOServiceStreams implements IOService {
     public void outputString(String s){
         output.println(s);
     }
+
+    @Override
+    public String inputString() {
+        return input.nextLine();
+    }
+
+    @Override
+    public int inputInt() {
+        return input.nextInt();
+    }
 }
