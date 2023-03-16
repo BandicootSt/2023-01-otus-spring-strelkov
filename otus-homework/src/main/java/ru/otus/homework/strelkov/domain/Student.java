@@ -11,9 +11,4 @@ public class Student {
 
     @NonNull
     String lastName;
-
-    @Override
-    public String toString() {
-        return lastName + " " + firstName;
-    }
 }

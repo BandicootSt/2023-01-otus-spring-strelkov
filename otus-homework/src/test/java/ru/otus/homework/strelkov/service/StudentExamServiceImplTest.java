@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
+import ru.otus.homework.strelkov.domain.Student;
 import ru.otus.homework.strelkov.service.impl.StudentExamServiceImpl;
 
 import java.util.List;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.when;
 class StudentExamServiceImplTest {
 
     private static final int EXAM_PASSING_SCORE = 3;
+
+    private static final Student TEST_STUDENT = new Student("Ivan", "Ivanov");
 
     private static final Question FIRST_QUESTION = new Question(
         "Which US president wrote his own Sherlock Holmes story?",
@@ -82,6 +85,15 @@ class StudentExamServiceImplTest {
     @Mock
     private QuestionService questionService;
 
+    @Mock
+    private QuestionsPrintService questionsPrintService;
+
+    @Mock
+    private QuestionsSupportService questionsSupportService;
+
+    @Mock
+    private StudentService studentService;
+
     @Captor
     private ArgumentCaptor<String> stringCaptor;
 
@@ -94,57 +106,62 @@ class StudentExamServiceImplTest {
         studentExamService = new StudentExamServiceImpl(
             ioService,
             questionService,
+            questionsPrintService,
+            questionsSupportService,
+            studentService,
             EXAM_PASSING_SCORE
         );
+
+        when(studentService.requestStudentName()).thenReturn(TEST_STUDENT);
+        when(studentService.getStudentNameAsString(eq(TEST_STUDENT))).thenReturn("Ivanov Ivan");
     }
 
     @Test
     public void testExamineStudentSuccess() {
 
-        when(ioService.inputString()).thenReturn("Ivanov", "Ivan");
         when(questionService.getQuestions()).thenReturn(TEST_QUESTIONS);
+
         when(ioService.inputInt()).thenReturn(2, 2, 1, 1, 1);
 
-        when(questionService.getAnswerOption(eq(FIRST_QUESTION), eq(2)))
+        when(questionsSupportService.getAnswerOption(eq(FIRST_QUESTION), eq(2)))
             .thenReturn(FIRST_QUESTION.getAnswerOptions().get(1));
-        when(questionService.getAnswerOption(eq(SECOND_QUESTION), eq(2)))
+        when(questionsSupportService.getAnswerOption(eq(SECOND_QUESTION), eq(2)))
             .thenReturn(SECOND_QUESTION.getAnswerOptions().get(1));
-        when(questionService.getAnswerOption(eq(THIRD_QUESTION), eq(1)))
+        when(questionsSupportService.getAnswerOption(eq(THIRD_QUESTION), eq(1)))
             .thenReturn(THIRD_QUESTION.getAnswerOptions().get(0));
-        when(questionService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
+        when(questionsSupportService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
             .thenReturn(FORTH_QUESTION.getAnswerOptions().get(0));
-        when(questionService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
+        when(questionsSupportService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
             .thenReturn(FIFTH_QUESTION.getAnswerOptions().get(0));
 
         studentExamService.examineStudent();
 
-        verify(ioService, times(4)).outputString(stringCaptor.capture());
-        assertEquals("Student: Ivan Ivanov, Score: 4, Result: Success", stringCaptor.getValue());
+        verify(ioService, times(2)).outputString(stringCaptor.capture());
+        assertEquals("Student: Ivanov Ivan, Score: 4, Result: Success", stringCaptor.getValue());
     }
 
     @Test
     public void testExamineStudentFailed() {
 
-        when(ioService.inputString()).thenReturn("Ivanov", "Ivan");
         when(questionService.getQuestions()).thenReturn(TEST_QUESTIONS);
 
         when(ioService.inputInt()).thenReturn(3, 3, 2, 1, 1);
 
-        when(questionService.getAnswerOption(eq(FIRST_QUESTION), eq(3)))
+        when(questionsSupportService.getAnswerOption(eq(FIRST_QUESTION), eq(3)))
             .thenReturn(FIRST_QUESTION.getAnswerOptions().get(2));
-        when(questionService.getAnswerOption(eq(SECOND_QUESTION), eq(3)))
+        when(questionsSupportService.getAnswerOption(eq(SECOND_QUESTION), eq(3)))
             .thenReturn(SECOND_QUESTION.getAnswerOptions().get(2));
-        when(questionService.getAnswerOption(eq(THIRD_QUESTION), eq(2)))
+        when(questionsSupportService.getAnswerOption(eq(THIRD_QUESTION), eq(2)))
             .thenReturn(THIRD_QUESTION.getAnswerOptions().get(1));
-        when(questionService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
+        when(questionsSupportService.getAnswerOption(eq(FORTH_QUESTION), eq(1)))
             .thenReturn(FORTH_QUESTION.getAnswerOptions().get(0));
-        when(questionService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
+        when(questionsSupportService.getAnswerOption(eq(FIFTH_QUESTION), eq(1)))
             .thenReturn(FIFTH_QUESTION.getAnswerOptions().get(0));
 
         studentExamService.examineStudent();
 
-        verify(ioService, times(4)).outputString(stringCaptor.capture());
-        assertEquals("Student: Ivan Ivanov, Score: 2, Result: Failed", stringCaptor.getValue());
+        verify(ioService, times(2)).outputString(stringCaptor.capture());
+        assertEquals("Student: Ivanov Ivan, Score: 2, Result: Failed", stringCaptor.getValue());
     }
 
 }
