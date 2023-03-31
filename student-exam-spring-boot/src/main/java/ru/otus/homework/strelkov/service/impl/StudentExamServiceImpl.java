@@ -1,11 +1,11 @@
 package ru.otus.homework.strelkov.service.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.otus.homework.strelkov.config.AppProps;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.domain.Student;
 import ru.otus.homework.strelkov.service.IOService;
-import ru.otus.homework.strelkov.service.MessageService;
+import ru.otus.homework.strelkov.service.LocalizedMessageService;
 import ru.otus.homework.strelkov.service.QuestionService;
 import ru.otus.homework.strelkov.service.QuestionsPrintService;
 import ru.otus.homework.strelkov.service.QuestionsSupportService;
@@ -22,8 +22,8 @@ public class StudentExamServiceImpl implements StudentExamService {
     private final QuestionsPrintService questionsPrintService;
     private final QuestionsSupportService questionsSupportService;
     private final StudentService studentService;
-    private final MessageService messageService;
-    private final AppProps props;
+    private final LocalizedMessageService messageService;
+    private final Integer examPassingScore;
 
     public StudentExamServiceImpl(
         IOService ioService,
@@ -31,8 +31,8 @@ public class StudentExamServiceImpl implements StudentExamService {
         QuestionsPrintService questionsPrintService,
         QuestionsSupportService questionsSupportService,
         StudentService studentService,
-        MessageService messageService,
-        AppProps props
+        LocalizedMessageService messageService,
+        @Value("${exam.passing.score}") Integer examPassingScore
     ) {
         this.ioService = ioService;
         this.questionService = questionService;
@@ -40,14 +40,14 @@ public class StudentExamServiceImpl implements StudentExamService {
         this.questionsSupportService = questionsSupportService;
         this.studentService = studentService;
         this.messageService = messageService;
-        this.props = props;
+        this.examPassingScore = examPassingScore;
     }
 
     @Override
     public void examineStudent() {
         final Student student = studentService.requestStudentName();
 
-        ioService.outputString(messageService.getExamStartMessage());
+        ioService.outputString(messageService.getLocalizedMessage("exam.start"));
 
         final List<Question> questions = questionService.getQuestions();
         int resultScore = 0;
@@ -62,10 +62,20 @@ public class StudentExamServiceImpl implements StudentExamService {
 
         final String studentName = studentService.getStudentNameAsString(student);
 
-        if (resultScore >= props.getExamPassingScore()) {
-            ioService.outputString(messageService.getExamResultSuccessMessage(studentName, resultScore));
+        if (resultScore >= examPassingScore) {
+            ioService.outputString(
+                messageService.getLocalizedMessage(
+                    "exam.result.success",
+                    new Object[]{studentName, resultScore}
+                )
+            );
         } else {
-            ioService.outputString(messageService.getExamResultFailedMessage(studentName, resultScore));
+            ioService.outputString(
+                messageService.getLocalizedMessage(
+                    "exam.result.failed",
+                    new Object[]{studentName, resultScore}
+                )
+            );
         }
     }
 }

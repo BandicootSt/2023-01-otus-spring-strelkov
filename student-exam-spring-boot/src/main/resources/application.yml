@@ -3,7 +3,10 @@ spring:
     basename: "i18n/appmessages"
     encoding: "UTF-8"
 application:
-  locale: ru_RU
-  questions-file-path-en: "questions_en.csv"
-  questions-file-path-ru: "questions_ru.csv"
-  exam-passing-score: 3
+  questions-file-path:
+    en: "questions_en.csv"
+    ru: "questions_ru.csv"
+locale: en
+exam:
+  passing:
+    score: 3

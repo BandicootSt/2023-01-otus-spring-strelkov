@@ -1,43 +1,26 @@
 package ru.otus.homework.strelkov.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import ru.otus.homework.strelkov.config.AppProps;
 import ru.otus.homework.strelkov.dao.QuestionDao;
 import ru.otus.homework.strelkov.dao.impl.QuestionDaoImpl;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.service.exception.QuestionsFileNotFoundException;
 
-import java.util.Locale;
-
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 public class QuestionDaoImplTest {
 
     private static final String TEST_QUESTIONS_FILE_PATH = "test_questions.csv";
     private static final String NOT_EXISTED_QUESTION_FILE_PATH = "not_existed_questions_file.csv";
 
-    @Mock
-    private AppProps appProps;
-
     private QuestionDao questionDao;
-
-    @BeforeEach
-    public void beforeEach() {
-        MockitoAnnotations.openMocks(this);
-        questionDao = new QuestionDaoImpl(appProps);
-        when(appProps.getLocale()).thenReturn(Locale.ENGLISH);
-    }
 
     @Test
     public void testGetQuestions() {
-        when(appProps.getQuestionsFilePathEn()).thenReturn(TEST_QUESTIONS_FILE_PATH);
+        questionDao = new QuestionDaoImpl(TEST_QUESTIONS_FILE_PATH);
         assertEquals(
             asList(
                 new Question(
@@ -87,7 +70,7 @@ public class QuestionDaoImplTest {
 
     @Test
     public void testGetQuestionsFileNotExist() {
-        when(appProps.getQuestionsFilePathEn()).thenReturn(NOT_EXISTED_QUESTION_FILE_PATH);
+        questionDao = new QuestionDaoImpl(NOT_EXISTED_QUESTION_FILE_PATH);
 
         QuestionsFileNotFoundException ex = assertThrows(
             QuestionsFileNotFoundException.class,

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.strelkov.domain.Student;
 import ru.otus.homework.strelkov.service.IOService;
-import ru.otus.homework.strelkov.service.MessageService;
+import ru.otus.homework.strelkov.service.LocalizedMessageService;
 import ru.otus.homework.strelkov.service.StudentService;
 
 @Service
@@ -12,13 +12,13 @@ import ru.otus.homework.strelkov.service.StudentService;
 public class StudentServiceImpl implements StudentService {
 
     private final IOService ioService;
-    private final MessageService messageService;
+    private final LocalizedMessageService messageService;
 
     @Override
     public Student requestStudentName() {
-        ioService.outputString(messageService.getStudentRequestFirstNameMessage());
+        ioService.outputString(messageService.getLocalizedMessage("student.request.first.name"));
         String firstName = ioService.inputString();
-        ioService.outputString(messageService.getStudentRequestLastNameMessage());
+        ioService.outputString(messageService.getLocalizedMessage("student.request.last.name"));
         return new Student(firstName, ioService.inputString());
     }
 

@@ -1,8 +1,6 @@
 package ru.otus.homework.strelkov.dao.impl;
 
 import lombok.NonNull;
-import org.springframework.stereotype.Component;
-import ru.otus.homework.strelkov.config.AppProps;
 import ru.otus.homework.strelkov.dao.QuestionDao;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
@@ -15,29 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-@Component
 public class QuestionDaoImpl implements QuestionDao {
 
     private static final int QUESTION_CSV_COL_INDEX = 0;
     private static final int CORRECT_ANSWER_CSV_COL_INDEX = 4;
     private static final String LINE_BREAK = "\n";
     private static final String SEMICOLON_SEPARATOR = ";";
-    private final AppProps props;
 
-    public QuestionDaoImpl(AppProps props) {
-        this.props = props;
+    private final String questionsFilePath;
+
+    public QuestionDaoImpl(String questionsFilePath) {
+        this.questionsFilePath = questionsFilePath;
     }
 
     @Override
     @NonNull
     public List<Question> getQuestions() {
-
-        String questionsFilePath = props.getLocale() == Locale.ENGLISH
-            ? props.getQuestionsFilePathEn()
-            : props.getQuestionsFilePathRu();
 
         try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(questionsFilePath)) {
 

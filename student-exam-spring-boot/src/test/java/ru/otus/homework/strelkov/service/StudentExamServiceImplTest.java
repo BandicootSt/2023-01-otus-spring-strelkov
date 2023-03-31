@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.otus.homework.strelkov.config.AppProps;
 import ru.otus.homework.strelkov.domain.AnswerOption;
 import ru.otus.homework.strelkov.domain.Question;
 import ru.otus.homework.strelkov.domain.Student;
@@ -95,10 +94,7 @@ class StudentExamServiceImplTest {
     private StudentService studentService;
 
     @Mock
-    private MessageService messageService;
-
-    @Mock
-    private AppProps props;
+    private LocalizedMessageService messageService;
 
 
     private StudentExamService studentExamService;
@@ -113,13 +109,12 @@ class StudentExamServiceImplTest {
             questionsSupportService,
             studentService,
             messageService,
-            props
+            EXAM_PASSING_SCORE
         );
 
         when(studentService.requestStudentName()).thenReturn(TEST_STUDENT);
         when(studentService.getStudentNameAsString(eq(TEST_STUDENT))).thenReturn(TEST_STUDENT_NAME);
-        when(messageService.getExamStartMessage()).thenReturn(EXAM_START_MESSAGE);
-        when(props.getExamPassingScore()).thenReturn(EXAM_PASSING_SCORE);
+        when(messageService.getLocalizedMessage(eq("exam.start"))).thenReturn(EXAM_START_MESSAGE);
     }
 
     @Test
@@ -143,7 +138,8 @@ class StudentExamServiceImplTest {
         studentExamService.examineStudent();
 
         verify(ioService, times(1)).outputString(eq(EXAM_START_MESSAGE));
-        verify(messageService, times(1)).getExamResultSuccessMessage(eq(TEST_STUDENT_NAME), eq(4));
+        verify(messageService, times(1))
+            .getLocalizedMessage(eq("exam.result.success"), eq(new Object[]{TEST_STUDENT_NAME, 4}));
     }
 
     @Test
@@ -167,6 +163,7 @@ class StudentExamServiceImplTest {
         studentExamService.examineStudent();
 
         verify(ioService, times(1)).outputString(eq(EXAM_START_MESSAGE));
-        verify(messageService, times(1)).getExamResultFailedMessage(eq(TEST_STUDENT_NAME), eq(2));
+        verify(messageService, times(1))
+            .getLocalizedMessage(eq("exam.result.failed"), eq(new Object[]{TEST_STUDENT_NAME, 2}));
     }
 }
