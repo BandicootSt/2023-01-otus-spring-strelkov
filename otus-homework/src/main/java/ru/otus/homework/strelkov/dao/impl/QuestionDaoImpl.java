@@ -49,13 +49,16 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @NonNull
     private Question generateQuestionWithAnswerOptions(String[] questionRecord) {
-        List<AnswerOption> answerOptions = new ArrayList<>();
-        int correctAnswerOptionNum = Integer.parseInt(questionRecord[CORRECT_ANSWER_CSV_COL_INDEX]);
-        for (int i = 1; i < questionRecord.length - 1; i++) {
-            answerOptions.add(new AnswerOption(i, questionRecord[i], i == correctAnswerOptionNum));
+        try {
+            List<AnswerOption> answerOptions = new ArrayList<>();
+            int correctAnswerOptionNum = Integer.parseInt(questionRecord[CORRECT_ANSWER_CSV_COL_INDEX]);
+            for (int i = 1; i < questionRecord.length - 1; i++) {
+                answerOptions.add(new AnswerOption(i, questionRecord[i], i == correctAnswerOptionNum));
+            }
+            return new Question(questionRecord[QUESTION_CSV_COL_INDEX], answerOptions);
+        } catch (Exception ex) {
+            throw new QuestionsFileReadException("Failed while trying to parse questions from csv file", ex);
         }
-        return new Question(questionRecord[QUESTION_CSV_COL_INDEX], answerOptions);
     }
-
 
 }

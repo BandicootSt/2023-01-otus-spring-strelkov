@@ -4,12 +4,11 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value
-public class AnswerOption {
-
-    int optionNum;
+public class Student {
 
     @NonNull
-    String option;
+    String firstName;
 
-    boolean correct;
+    @NonNull
+    String lastName;
 }

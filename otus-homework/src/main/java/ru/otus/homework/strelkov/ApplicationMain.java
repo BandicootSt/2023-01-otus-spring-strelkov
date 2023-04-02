@@ -1,13 +1,15 @@
 package ru.otus.homework.strelkov;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.otus.homework.strelkov.service.QuestionService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import ru.otus.homework.strelkov.service.StudentExamService;
 
+@ComponentScan
 public class ApplicationMain {
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/spring-context.xml");
-        QuestionService questionService = context.getBean(QuestionService.class);
-        questionService.printQuestions();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationMain.class);
+        StudentExamService studentExamService = context.getBean(StudentExamService.class);
+        studentExamService.examineStudent();
     }
 }
