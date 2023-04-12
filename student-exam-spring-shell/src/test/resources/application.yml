@@ -1,0 +1,14 @@
+spring:
+  shell:
+    interactive:
+      enabled: false
+  messages:
+    basename: "i18n/appmessages"
+    encoding: "UTF-8"
+application:
+  questions-file-path:
+    en: "test_questions.csv"
+locale: en
+exam:
+  passing:
+    score: 3
