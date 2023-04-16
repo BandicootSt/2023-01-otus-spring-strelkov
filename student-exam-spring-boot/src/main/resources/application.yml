@@ -1,0 +1,12 @@
+spring:
+  messages:
+    basename: "i18n/appmessages"
+    encoding: "UTF-8"
+application:
+  questions-file-path:
+    en: "questions_en.csv"
+    ru: "questions_ru.csv"
+locale: en
+exam:
+  passing:
+    score: 3
