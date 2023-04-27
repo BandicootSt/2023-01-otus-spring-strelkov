@@ -18,7 +18,7 @@ public class AuthorsDaoImpl implements AuthorsDao {
     private final NamedParameterJdbcOperations jdbc;
 
     @Override
-    public long addAuthor(Author author) {
+    public Author addAuthor(Author author) {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         //language=sql
@@ -39,7 +39,9 @@ public class AuthorsDaoImpl implements AuthorsDao {
             keyHolder
         );
 
-        return (long) keyHolder.getKey();
+        return author.toBuilder()
+            .id((long) keyHolder.getKey())
+            .build();
     }
 
     @Override

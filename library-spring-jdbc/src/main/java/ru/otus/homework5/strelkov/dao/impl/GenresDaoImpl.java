@@ -18,7 +18,7 @@ public class GenresDaoImpl implements GenresDao {
     private final NamedParameterJdbcOperations jdbc;
 
     @Override
-    public long addGenre(Genre genre) {
+    public Genre addGenre(Genre genre) {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         //language=sql
@@ -32,7 +32,7 @@ public class GenresDaoImpl implements GenresDao {
             keyHolder
         );
 
-        return (long) keyHolder.getKey();
+        return new Genre((long) keyHolder.getKey(), genre.getName());
     }
 
     @Override

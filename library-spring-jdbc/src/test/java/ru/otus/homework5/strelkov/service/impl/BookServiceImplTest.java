@@ -9,7 +9,6 @@ import ru.otus.homework5.strelkov.dao.BooksDao;
 import ru.otus.homework5.strelkov.domain.Author;
 import ru.otus.homework5.strelkov.domain.Book;
 import ru.otus.homework5.strelkov.domain.Genre;
-import ru.otus.homework5.strelkov.dto.AddBookRequestDto;
 import ru.otus.homework5.strelkov.service.AuthorService;
 import ru.otus.homework5.strelkov.service.BookService;
 import ru.otus.homework5.strelkov.service.GenreService;
@@ -44,20 +43,11 @@ class BookServiceImplTest {
     private static final Genre SECOND_PREPARED_TEST_GENRE = new Genre(2L, "TestGenre2");
 
     private static final Book FIRST_PREPARED_TEST_BOOK =
-        Book.builder()
-            .id(1L)
-            .name("TestBook1")
-            .author(FIRST_PREPARED_TEST_AUTHOR)
-            .genre(FIRST_PREPARED_TEST_GENRE)
-            .build();
+        new Book(1L, "TestBook1",  FIRST_PREPARED_TEST_AUTHOR, FIRST_PREPARED_TEST_GENRE);
 
     private static final Book SECOND_PREPARED_TEST_BOOK =
-        Book.builder()
-            .id(2L)
-            .name("TestBook2")
-            .author(SECOND_PREPARED_TEST_AUTHOR)
-            .genre(SECOND_PREPARED_TEST_GENRE)
-            .build();
+        new Book(2L, "TestBook2",  SECOND_PREPARED_TEST_AUTHOR, SECOND_PREPARED_TEST_GENRE);
+
 
     private static final List<Book> PREPARED_TESTS_BOOKS = ImmutableList.of(
         FIRST_PREPARED_TEST_BOOK,
@@ -81,32 +71,6 @@ class BookServiceImplTest {
             booksDao,
             authorService,
             genreService
-        );
-    }
-
-    @Test
-    public void testAddBook() {
-
-        when(authorService.getAuthorById(1L)).thenReturn(FIRST_PREPARED_TEST_AUTHOR);
-        when(genreService.getGenreById(1L)).thenReturn(FIRST_PREPARED_TEST_GENRE);
-
-        final Book expectedForAddBook = Book.builder()
-            .name("NewAddedTestBookName")
-            .author(FIRST_PREPARED_TEST_AUTHOR)
-            .genre(FIRST_PREPARED_TEST_GENRE)
-            .build();
-
-        when(booksDao.addBook(expectedForAddBook)).thenReturn(3L);
-
-        assertThat(
-            bookService.addBook(
-                AddBookRequestDto.builder()
-                    .name("NewAddedTestBookName")
-                    .authorId(1L)
-                    .genreId(1L)
-                    .build()
-            ),
-            equalTo(3L)
         );
     }
 

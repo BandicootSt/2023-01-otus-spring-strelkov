@@ -2,24 +2,28 @@ package ru.otus.homework5.strelkov.domain;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value
-@Builder(toBuilder = true)
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
 public class Book {
 
     @Nullable
-    Long id;
+    private Long id;
 
     @Nonnull
-    String name;
+    private final String name;
 
     @Nonnull
-    Author author;
+    private final Author author;
 
     @Nonnull
-    Genre genre;
+    private final Genre genre;
+
+    public Book(String name, Author author, Genre genre) {
+        this.name = name;
+        this.author = author;
+        this.genre = genre;
+    }
 }

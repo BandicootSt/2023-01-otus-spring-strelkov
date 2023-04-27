@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AuthorsDao {
 
-    long addAuthor(Author author);
+    Author addAuthor(Author author);
 
     List<Author> getAllAuthors();
 

@@ -22,11 +22,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public long addBook(AddBookRequestDto addBookRequest) {
         return booksDao.addBook(
-            Book.builder()
-                .name(addBookRequest.getName())
-                .author(authorService.getAuthorById(addBookRequest.getAuthorId()))
-                .genre(genreService.getGenreById(addBookRequest.getGenreId()))
-                .build()
+            new Book(
+                addBookRequest.getName(),
+                authorService.getAuthorById(addBookRequest.getAuthorId()),
+                genreService.getGenreById(addBookRequest.getGenreId())
+            )
         );
     }
 

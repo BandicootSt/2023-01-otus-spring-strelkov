@@ -31,13 +31,7 @@ public class AppCommands {
         @ShellOption("g_id") Long genreId
     ) {
         return withResultToStringConversion(() ->
-            bookService.addBook(
-                AddBookRequestDto.builder()
-                    .name(name)
-                    .authorId(authorId)
-                    .genreId(genreId)
-                    .build()
-            )
+            bookService.addBook(new AddBookRequestDto(name, authorId, genreId))
         );
     }
 

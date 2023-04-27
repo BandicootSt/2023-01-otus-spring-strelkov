@@ -2,8 +2,6 @@ package ru.otus.homework5.strelkov.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import ru.otus.homework5.strelkov.service.ResponseConverter;
 public class ResponseConverterImpl implements ResponseConverter {
 
     private final ObjectMapper mapper;
-    private final Gson gson;
 
     @Override
     public String fromSuccess() {
@@ -30,7 +27,7 @@ public class ResponseConverterImpl implements ResponseConverter {
             .result(result)
             .build();
         try {
-            return gson.toJson(JsonParser.parseString(mapper.writeValueAsString(response)));
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
         } catch (JsonProcessingException e) {
             throw new ResponseSerializeException("Failed while trying to serialize response for object: " + response.toString(), e);
         }
@@ -43,7 +40,7 @@ public class ResponseConverterImpl implements ResponseConverter {
             .errMsg(errMsg)
             .build();
         try {
-            return gson.toJson(JsonParser.parseString(mapper.writeValueAsString(response)));
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
         } catch (JsonProcessingException e) {
             throw new ResponseSerializeException("Failed while trying to serialize response for object: " + response.toString(), e);
         }

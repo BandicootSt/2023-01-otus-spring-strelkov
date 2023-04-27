@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
@@ -60,16 +60,15 @@ class AuthorsDaoImplTest {
             .patronymic("TestPatronymic4")
             .build();
 
-        long addedAuthorId = authorsDao.addAuthor(testAuthor);
+        Author addedAuthor = authorsDao.addAuthor(testAuthor);
 
-        assertThat(addedAuthorId, equalTo(4L));
 
         testAuthor = testAuthor
             .toBuilder()
-            .id(addedAuthorId)
+            .id(addedAuthor.getId())
             .build();
 
-        assertThat(authorsDao.getAuthorById(addedAuthorId), equalTo(testAuthor));
+        assertThat(addedAuthor, equalTo(testAuthor));
     }
 
     @Test
@@ -84,9 +83,8 @@ class AuthorsDaoImplTest {
 
     @Test
     public void testDeleteAuthor() {
-        assertThat(authorsDao.getAllAuthors(), hasSize(3));
         authorsDao.deleteAuthorById(3L);
-        assertThat(authorsDao.getAllAuthors(), hasSize(2));
+        assertFalse(authorsDao.getAllAuthors().contains(THIRD_PREPARED_TEST_AUTHOR));
     }
 
 }

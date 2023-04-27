@@ -15,7 +15,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenresDao genresDao;
 
     @Override
-    public long addGenre(Genre genre) {
+    public Genre addGenre(Genre genre) {
         return genresDao.addGenre(genre);
     }
 

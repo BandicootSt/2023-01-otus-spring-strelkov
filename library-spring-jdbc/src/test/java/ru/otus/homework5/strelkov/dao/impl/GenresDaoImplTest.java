@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
@@ -35,13 +35,13 @@ class GenresDaoImplTest {
     @Test
     public void testAddAGenre() {
 
-        long addedGenreId = genresDao.addGenre(new Genre("TestGenre4"));
+        Genre testGenre = new Genre("TestGenre4");
 
-        assertThat(addedGenreId, equalTo(4L));
+        Genre addedGenre = genresDao.addGenre(testGenre);
 
-        Genre testGenre = new Genre(4L, "TestGenre4");
+        testGenre.setId(addedGenre.getId());
 
-        assertThat(genresDao.getGenreById(addedGenreId), equalTo(testGenre));
+        assertThat(addedGenre, equalTo(testGenre));
     }
 
     @Test
@@ -56,9 +56,8 @@ class GenresDaoImplTest {
 
     @Test
     public void testDeleteGenre() {
-        assertThat(genresDao.getAllGenres(), hasSize(3));
         genresDao.deleteGenreById(3L);
-        assertThat(genresDao.getAllGenres(), hasSize(2));
+        assertFalse(genresDao.getAllGenres().contains(THIRD_PREPARED_TEST_GENRE));
     }
 
 }

@@ -3,22 +3,19 @@ package ru.otus.homework5.strelkov.domain;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 @AllArgsConstructor
-@EqualsAndHashCode
 public class Genre {
 
     @Nullable
-    Long id;
+    private Long id;
 
     @Nonnull
-    String name;
+    private final String name;
 
     public Genre (String name) {
-        this.id = null;
         this.name = name;
     }
 

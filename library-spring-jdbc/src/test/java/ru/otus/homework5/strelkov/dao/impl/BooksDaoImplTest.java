@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
@@ -22,34 +22,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BooksDaoImplTest {
 
     private static final Book FIRST_PREPARED_TEST_BOOK =
-        Book.builder()
-            .id(1L)
-            .name("TestBook1")
-            .author(
-                Author.builder()
-                    .id(1L)
-                    .firstName("TestFirstName1")
-                    .lastName("TestLastName1")
-                    .patronymic("TestPatronymic1")
-                    .build()
-            )
-            .genre(new Genre(1L, "TestGenre1"))
-            .build();
+        new Book(
+            1L,
+            "TestBook1",
+            Author.builder()
+                .id(1L)
+                .firstName("TestFirstName1")
+                .lastName("TestLastName1")
+                .patronymic("TestPatronymic1")
+                .build(),
+            new Genre(1L, "TestGenre1")
+        );
 
     private static final Book SECOND_PREPARED_TEST_BOOK =
-        Book.builder()
-            .id(2L)
-            .name("TestBook2")
-            .author(
-                Author.builder()
-                    .id(2L)
-                    .firstName("TestFirstName2")
-                    .lastName("TestLastName2")
-                    .patronymic("TestPatronymic2")
-                    .build()
-            )
-            .genre(new Genre(2L, "TestGenre2"))
-            .build();
+        new Book(
+            2L,
+            "TestBook2",
+            Author.builder()
+                .id(2L)
+                .firstName("TestFirstName2")
+                .lastName("TestLastName2")
+                .patronymic("TestPatronymic2")
+                .build(),
+            new Genre(2L, "TestGenre2")
+        );
 
     private static final List<Book> PREPARED_TESTS_BOOKS = ImmutableList.of(
         FIRST_PREPARED_TEST_BOOK,
@@ -62,27 +58,20 @@ class BooksDaoImplTest {
     @Test
     public void testAddBook() {
 
-        Book testBook = Book.builder()
-            .name("TestBook3")
-            .author(
-                Author.builder()
-                    .id(1L)
-                    .firstName("TestFirstName1")
-                    .lastName("TestLastName1")
-                    .patronymic("TestPatronymic1")
-                    .build()
-            )
-            .genre(new Genre(1L, "TestGenre1"))
-            .build();
+        Book testBook = new Book(
+            "TestBook3",
+            Author.builder()
+                .id(1L)
+                .firstName("TestFirstName1")
+                .lastName("TestLastName1")
+                .patronymic("TestPatronymic1")
+                .build(),
+            new Genre(1L, "TestGenre1")
+        );
 
         long addedBookId = booksDao.addBook(testBook);
 
-        assertThat(addedBookId, equalTo(3L));
-
-        testBook = testBook
-            .toBuilder()
-            .id(addedBookId)
-            .build();
+        testBook.setId(addedBookId);
 
         assertThat(booksDao.getBookByName("TestBook3"), equalTo(testBook));
     }
@@ -105,9 +94,8 @@ class BooksDaoImplTest {
 
     @Test
     public void testDeleteBook() {
-        assertThat(booksDao.getAllBooks(), hasSize(2));
         booksDao.deleteBookById(1L);
-        assertThat(booksDao.getAllBooks(), hasSize(1));
+        assertFalse(booksDao.getAllBooks().contains(FIRST_PREPARED_TEST_BOOK));
     }
 
 }

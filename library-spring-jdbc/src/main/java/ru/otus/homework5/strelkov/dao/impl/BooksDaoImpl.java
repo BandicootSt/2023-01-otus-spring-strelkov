@@ -72,28 +72,24 @@ public class BooksDaoImpl implements BooksDao {
                 "   a.patronymic," +
                 "   g.name as genre_name," +
                 " from books b" +
-                " join authors a on b.author_id = a.id" +
-                " join genres g on b.genre_id = g.id",
+                " inner join authors a on b.author_id = a.id" +
+                " inner join genres g on b.genre_id = g.id",
             new MapSqlParameterSource(),
             (rs, i) ->
-                Book.builder()
-                    .id(rs.getLong("book_id"))
-                    .name(rs.getString("book_name"))
-                    .author(
-                        Author.builder()
-                            .id(rs.getLong("author_id"))
-                            .firstName(rs.getString("first_name"))
-                            .lastName(rs.getString("last_name"))
-                            .patronymic(rs.getString("patronymic"))
-                            .build()
+                new Book(
+                    rs.getLong("book_id"),
+                    rs.getString("book_name"),
+                    Author.builder()
+                        .id(rs.getLong("author_id"))
+                        .firstName(rs.getString("first_name"))
+                        .lastName(rs.getString("last_name"))
+                        .patronymic(rs.getString("patronymic"))
+                        .build(),
+                    new Genre(
+                        rs.getLong("genre_id"),
+                        rs.getString("genre_name")
                     )
-                    .genre(
-                        new Genre(
-                            rs.getLong("genre_id"),
-                            rs.getString("genre_name")
-                        )
-                    )
-                    .build()
+                )
         );
     }
 
@@ -117,24 +113,20 @@ public class BooksDaoImpl implements BooksDao {
                 "   b.name = :book_name",
             new MapSqlParameterSource("book_name", bookName),
             (rs, i) ->
-                Book.builder()
-                    .id(rs.getLong("book_id"))
-                    .name(rs.getString("book_name"))
-                    .author(
-                        Author.builder()
-                            .id(rs.getLong("author_id"))
-                            .firstName(rs.getString("first_name"))
-                            .lastName(rs.getString("last_name"))
-                            .patronymic(rs.getString("patronymic"))
-                            .build()
+                new Book(
+                    rs.getLong("book_id"),
+                    rs.getString("book_name"),
+                    Author.builder()
+                        .id(rs.getLong("author_id"))
+                        .firstName(rs.getString("first_name"))
+                        .lastName(rs.getString("last_name"))
+                        .patronymic(rs.getString("patronymic"))
+                        .build(),
+                    new Genre(
+                        rs.getLong("genre_id"),
+                        rs.getString("genre_name")
                     )
-                    .genre(
-                        new Genre(
-                            rs.getLong("genre_id"),
-                            rs.getString("genre_name")
-                        )
-                    )
-                    .build()
+                )
         );
     }
 
