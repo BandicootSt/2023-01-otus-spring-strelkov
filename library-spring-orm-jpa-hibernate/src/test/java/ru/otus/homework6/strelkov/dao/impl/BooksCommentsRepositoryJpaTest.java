@@ -1,6 +1,7 @@
 package ru.otus.homework6.strelkov.dao.impl;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.persistence.TypedQuery;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,21 +25,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import(BooksCommentsRepositoryJpa.class)
 class BooksCommentsRepositoryJpaTest {
 
-    private static final Book FIRST_PREPARED_TEST_BOOK =
-        new Book(
-            1L,
-            "TestBook1",
-            new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"),
-            new Genre(1L, "TestGenre1")
-        );
+    private static final Book FIRST_PREPARED_TEST_BOOK = Book.builder()
+        .id(1L)
+        .name("TestBook1")
+        .author(new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"))
+        .genre(new Genre(1L, "TestGenre1"))
+        .build();
 
-    private static final Book SECOND_PREPARED_TEST_BOOK =
-        new Book(
-            2L,
-            "TestBook2",
-            new Author(2L, "TestFirstName2", "TestLastName2", "TestPatronymic2"),
-            new Genre(2L, "TestGenre2")
-        );
+    private static final Book SECOND_PREPARED_TEST_BOOK = Book.builder()
+        .id(2L)
+        .name("TestBook2")
+        .author(new Author(2L, "TestFirstName2", "TestLastName2", "TestPatronymic2"))
+        .genre(new Genre(2L, "TestGenre2"))
+        .build();
 
     private static final BookComment FIRST_PREPARED_TEST_COMMENT = new BookComment(
         1L,
@@ -72,21 +70,24 @@ class BooksCommentsRepositoryJpaTest {
     @Test
     public void testSave() {
 
-        BookComment testGenre = new BookComment("TestComment4", SECOND_PREPARED_TEST_BOOK);
+        final String testCommentText = "some_test_comment";
+        BookComment testBookComment = new BookComment(testCommentText, SECOND_PREPARED_TEST_BOOK);
 
-        commentsRepo.save(testGenre);
+        commentsRepo.save(testBookComment);
 
-        List<BookComment> comments = commentsRepo.findCommentsByBookId(2L);
+        TypedQuery<BookComment> query = entityManager.getEntityManager().createQuery(
+            "select c from BookComment c where c.text = :text",
+            BookComment.class
+        );
 
+        query.setParameter("text", testCommentText);
 
-        assertThat(comments, hasSize(1));
-        assertEquals("TestComment4", comments.get(0).getText());
-        assertEquals(2L, comments.get(0).getBook().getId());
+        assertEquals(testBookComment, query.getSingleResult());
     }
 
     @Test
     public void testFindCommentsByBookId() {
-        assertTrue(commentsRepo.findCommentsByBookId(FIRST_PREPARED_TEST_BOOK.getId()).containsAll(PREPARED_TEST_COMMENTS));
+        assertTrue(commentsRepo.findByBookId(FIRST_PREPARED_TEST_BOOK.getId()).containsAll(PREPARED_TEST_COMMENTS));
     }
 
     @Test
@@ -96,13 +97,13 @@ class BooksCommentsRepositoryJpaTest {
 
     @Test
     public void testUpdateCommentById() {
-        commentsRepo.updateCommentById(1L, "NewCommentText");
+        commentsRepo.updateById(1L, "NewCommentText");
         assertThat(entityManager.find(BookComment.class, 1L).getText(), equalTo("NewCommentText"));
     }
 
     @Test
     public void testDelete() {
-        commentsRepo.delete(3L);
+        commentsRepo.delete(THIRD_PREPARED_TEST_COMMENT.getId());
         assertThat(entityManager.find(BookComment.class,3L), Matchers.nullValue());
     }
 

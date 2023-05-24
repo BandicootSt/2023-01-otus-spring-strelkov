@@ -2,7 +2,6 @@ package ru.otus.homework6.strelkov.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,9 +23,9 @@ public class BooksCommentsRepositoryJpa implements BooksCommentsRepository {
     }
 
     @Override
-    public List<BookComment> findCommentsByBookId(Long bookId) {
+    public List<BookComment> findByBookId(Long bookId) {
         TypedQuery<BookComment> query = entityManager.createQuery(
-            "select c from BookComment c join fetch c.book where c.book.id = :book_id",
+            "select c from BookComment c where c.book.id = :book_id",
             BookComment.class
         );
         query.setParameter("book_id", bookId);
@@ -35,21 +34,23 @@ public class BooksCommentsRepositoryJpa implements BooksCommentsRepository {
 
     @Override
     public BookComment findById(Long commentId) {
-        return entityManager.find(BookComment.class, commentId);
+        TypedQuery<BookComment> query = entityManager.createQuery(
+            "select c from BookComment c join fetch c.book where c.id = :id",
+            BookComment.class
+        );
+        query.setParameter("id", commentId);
+        return query.getSingleResult();
     }
 
     @Override
-    public void updateCommentById(Long commentId, String newText) {
-        Query query = entityManager.createQuery("update BookComment c set c.text = :text where c.id = :id");
-        query.setParameter("text", newText);
-        query.setParameter("id", commentId);
-        query.executeUpdate();
+    public void updateById(Long commentId, String newText) {
+        BookComment comment = findById(commentId);
+        comment.setText(newText);
+        entityManager.merge(comment);
     }
 
     @Override
     public void delete(Long commentId) {
-        Query query = entityManager.createQuery("delete from BookComment c where c.id = :id");
-        query.setParameter("id", commentId);
-        query.executeUpdate();
+        entityManager.remove(findById(commentId));
     }
 }

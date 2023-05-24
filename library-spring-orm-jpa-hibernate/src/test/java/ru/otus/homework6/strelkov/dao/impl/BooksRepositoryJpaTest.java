@@ -1,6 +1,7 @@
 package ru.otus.homework6.strelkov.dao.impl;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.persistence.TypedQuery;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +17,26 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import(BooksRepositoryJpa.class)
 class BooksRepositoryJpaTest {
 
-    private static final Book FIRST_PREPARED_TEST_BOOK =
-        new Book(
-            1L,
-            "TestBook1",
-            new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"),
-            new Genre(1L, "TestGenre1")
-        );
+    private static final Book FIRST_PREPARED_TEST_BOOK = Book.builder()
+        .id(1L)
+        .name("TestBook1")
+        .author(new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"))
+        .genre(new Genre(1L, "TestGenre1"))
+        .build();
 
-    private static final Book SECOND_PREPARED_TEST_BOOK =
-        new Book(
-            2L,
-            "TestBook2",
-            new Author(2L, "TestFirstName2", "TestLastName2", "TestPatronymic2"),
-            new Genre(2L, "TestGenre2")
-        );
+    private static final Book SECOND_PREPARED_TEST_BOOK = Book.builder()
+        .id(2L)
+        .name("TestBook2")
+        .author(new Author(2L, "TestFirstName2", "TestLastName2", "TestPatronymic2"))
+        .genre(new Genre(2L, "TestGenre2"))
+        .build();
 
     private static final List<Book> PREPARED_TESTS_BOOKS = ImmutableList.of(
         FIRST_PREPARED_TEST_BOOK,
@@ -52,15 +52,22 @@ class BooksRepositoryJpaTest {
     @Test
     public void testSave() {
 
-        Book testBook = new Book(
-            "TestBook3",
-            new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"),
-            new Genre(1L, "TestGenre1")
-        );
+        Book testBook = Book.builder()
+            .name("TestBook3")
+            .author(new Author(1L, "TestFirstName1", "TestLastName1", "TestPatronymic1"))
+            .genre(new Genre(1L, "TestGenre1"))
+            .build();
 
         booksRepository.save(testBook);
 
-        assertTrue(booksRepository.findAll().stream().anyMatch(b -> b.getName().equals("TestBook3")));
+        TypedQuery<Book> query = entityManager.getEntityManager().createQuery(
+            "select b from Book b where b.name = :name",
+            Book.class
+        );
+
+        query.setParameter("name", "TestBook3");
+
+        assertEquals(testBook, query.getSingleResult());
     }
 
     @Test
@@ -86,7 +93,7 @@ class BooksRepositoryJpaTest {
 
     @Test
     public void testDelete() {
-        booksRepository.delete(3L);
-        assertThat(entityManager.find(Book.class,3L), Matchers.nullValue());
+        booksRepository.delete(2L);
+        assertThat(entityManager.find(Book.class, 2L), Matchers.nullValue());
     }
 }

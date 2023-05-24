@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework6.strelkov.dao.BooksCommentsRepository;
+import ru.otus.homework6.strelkov.domain.Book;
 import ru.otus.homework6.strelkov.domain.BookComment;
 import ru.otus.homework6.strelkov.dto.AddBookCommentRequestDto;
 import ru.otus.homework6.strelkov.service.BookService;
@@ -30,7 +31,10 @@ public class BooksCommentsServiceImpl implements BooksCommentsService {
     @Override
     @Transactional(readOnly = true)
     public List<BookComment> getCommentsByBookId(Long bookId) {
-        return booksCommentsRepository.findCommentsByBookId(bookId);
+        List<BookComment> bookComments = booksCommentsRepository.findByBookId(bookId);
+        Book book = bookService.getBookById(bookId);
+        bookComments.forEach(comment -> comment.setBook(book));
+        return bookComments;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class BooksCommentsServiceImpl implements BooksCommentsService {
     @Override
     @Transactional
     public void editCommentById(Long commentId, String newText) {
-        booksCommentsRepository.updateCommentById(commentId, newText);
+        booksCommentsRepository.updateById(commentId, newText);
     }
 
     @Override

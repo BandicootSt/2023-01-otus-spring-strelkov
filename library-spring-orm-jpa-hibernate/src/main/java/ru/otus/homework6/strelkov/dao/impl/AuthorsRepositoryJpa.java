@@ -2,7 +2,6 @@ package ru.otus.homework6.strelkov.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -37,9 +36,8 @@ public class AuthorsRepositoryJpa implements AuthorsRepository {
 
     @Override
     public void delete(Long authorId) {
-        Query query = entityManager.createQuery("delete from Author a where a.id = :id");
-        query.setParameter("id", authorId);
-        query.executeUpdate();
+        Author author = findById(authorId);
+        entityManager.remove(author);
     }
 
 }

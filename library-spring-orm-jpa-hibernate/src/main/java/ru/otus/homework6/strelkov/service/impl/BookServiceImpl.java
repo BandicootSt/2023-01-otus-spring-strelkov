@@ -24,11 +24,11 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void addBook(AddBookRequestDto addBookRequest) {
         booksRepository.save(
-            new Book(
-                addBookRequest.getName(),
-                authorService.getAuthorById(addBookRequest.getAuthorId()),
-                genreService.getGenreById(addBookRequest.getGenreId())
-            )
+            Book.builder()
+                .name(addBookRequest.getName())
+                .author(authorService.getAuthorById(addBookRequest.getAuthorId()))
+                .genre(genreService.getGenreById(addBookRequest.getGenreId()))
+                .build()
         );
     }
 
@@ -53,8 +53,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void updateBookNameById(String newBookName, Long bookId) {
-        Book book = booksRepository.findById(bookId);
-        book.setName(newBookName);
+        booksRepository.updateBookNameById(bookId, newBookName);
     }
 
     @Override

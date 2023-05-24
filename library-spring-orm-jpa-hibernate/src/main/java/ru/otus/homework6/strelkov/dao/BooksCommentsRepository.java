@@ -8,11 +8,11 @@ public interface BooksCommentsRepository {
 
     void save(BookComment bookComment);
 
-    List<BookComment> findCommentsByBookId(Long bookId);
+    List<BookComment> findByBookId(Long bookId);
 
     BookComment findById(Long commentId);
 
-    void updateCommentById(Long commentId, String newText);
+    void updateById(Long commentId, String newText);
 
     void delete(Long commentId);
 }

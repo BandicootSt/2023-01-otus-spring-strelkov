@@ -2,7 +2,6 @@ package ru.otus.homework6.strelkov.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -36,8 +35,7 @@ public class GenresRepositoryJpa implements GenresRepository {
 
     @Override
     public void delete(Long genreId) {
-        Query query = entityManager.createQuery("delete from Genre g where g.id = :id");
-        query.setParameter("id", genreId);
-        query.executeUpdate();
+        Genre genre = findById(genreId);
+        entityManager.remove(genre);
     }
 }

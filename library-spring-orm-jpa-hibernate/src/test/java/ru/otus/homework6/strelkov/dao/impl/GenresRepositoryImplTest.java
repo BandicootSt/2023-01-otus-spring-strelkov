@@ -1,6 +1,7 @@
 package ru.otus.homework6.strelkov.dao.impl;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.persistence.TypedQuery;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -43,7 +45,14 @@ class GenresRepositoryImplTest {
 
         genresRepo.save(testGenre);
 
-        assertTrue(genresRepo.findAll().stream().anyMatch(a -> a.getName().equals("TestGenre4")));
+        TypedQuery<Genre> query = entityManager.getEntityManager().createQuery(
+            "select g from Genre g where g.name = :name",
+            Genre.class
+        );
+
+        query.setParameter("name", "TestGenre4");
+
+        assertEquals(testGenre, query.getSingleResult());
     }
 
     @Test

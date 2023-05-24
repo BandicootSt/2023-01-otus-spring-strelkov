@@ -2,7 +2,6 @@ package ru.otus.homework6.strelkov.dao.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -45,16 +44,14 @@ public class BooksRepositoryJpa implements BooksRepository {
 
     @Override
     public void updateBookNameById(Long bookId, String newBookName) {
-        Query query = entityManager.createQuery("update Book b set b.name = :name where b.id = :id");
-        query.setParameter("name", newBookName);
-        query.setParameter("id", bookId);
-        query.executeUpdate();
+        Book book = findById(bookId);
+        book.setName(newBookName);
+        entityManager.merge(book);
     }
 
     @Override
     public void delete(Long bookId) {
-        Query query = entityManager.createQuery("delete from Book b where b.id = :id");
-        query.setParameter("id", bookId);
-        query.executeUpdate();
+        Book book = findById(bookId);
+        entityManager.remove(book);
     }
 }

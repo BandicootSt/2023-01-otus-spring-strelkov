@@ -1,5 +1,6 @@
 package ru.otus.homework6.strelkov.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +32,7 @@ public class BookComment {
 
     @Nonnull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "book_id")
     private Book book;
 
