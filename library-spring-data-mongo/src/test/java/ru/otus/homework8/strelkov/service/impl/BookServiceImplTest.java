@@ -11,6 +11,7 @@ import ru.otus.homework8.strelkov.domain.Book;
 import ru.otus.homework8.strelkov.domain.Genre;
 import ru.otus.homework8.strelkov.service.AuthorService;
 import ru.otus.homework8.strelkov.service.BookService;
+import ru.otus.homework8.strelkov.service.BooksCommentsService;
 import ru.otus.homework8.strelkov.service.GenreService;
 
 import java.util.List;
@@ -54,6 +55,9 @@ class BookServiceImplTest {
     @MockBean
     private GenreService genreService;
 
+    @MockBean
+    private BooksCommentsService booksCommentsService;
+
     private BookService bookService;
 
     @BeforeEach
@@ -61,7 +65,8 @@ class BookServiceImplTest {
         bookService = new BookServiceImpl(
             booksRepository,
             authorService,
-            genreService
+            genreService,
+            booksCommentsService
         );
     }
 

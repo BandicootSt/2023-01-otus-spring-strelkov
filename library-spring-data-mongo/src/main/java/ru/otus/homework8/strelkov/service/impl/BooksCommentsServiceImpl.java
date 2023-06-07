@@ -56,4 +56,14 @@ public class BooksCommentsServiceImpl implements BooksCommentsService {
     public void deleteCommentById(String commentId) {
         booksCommentsRepository.deleteById(commentId);
     }
+
+    @Override
+    public void deleteAllCommentsByBook(Book book) {
+        booksCommentsRepository.deleteAllByBook(book);
+    }
+
+    @Override
+    public void deleteAllCommentsByBooks(List<Book> books) {
+        booksCommentsRepository.deleteAllByBooks(books);
+    }
 }

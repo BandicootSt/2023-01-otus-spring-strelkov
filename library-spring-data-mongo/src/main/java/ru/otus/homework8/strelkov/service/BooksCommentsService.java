@@ -1,5 +1,6 @@
 package ru.otus.homework8.strelkov.service;
 
+import ru.otus.homework8.strelkov.domain.Book;
 import ru.otus.homework8.strelkov.domain.BookComment;
 import ru.otus.homework8.strelkov.dto.AddBookCommentRequestDto;
 
@@ -16,4 +17,8 @@ public interface BooksCommentsService {
     void editCommentTextById(String commentId, String newText);
 
     void deleteCommentById(String commentId);
+
+    void deleteAllCommentsByBook(Book book);
+
+    void deleteAllCommentsByBooks(List<Book> books);
 }

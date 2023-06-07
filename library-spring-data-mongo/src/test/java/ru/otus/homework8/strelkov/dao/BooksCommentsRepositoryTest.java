@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
@@ -68,6 +69,19 @@ class BooksCommentsRepositoryTest {
                 )
                 .getText(),
             equalTo("NewCommentText")
+        );
+    }
+
+    @Test
+    public void testDeleteAllByBookId() {
+        commentsRepo.deleteAllByBooks(List.of(PREPARED_TEST_BOOK));
+        assertEquals(
+            0,
+            mongoOperations.find(
+                Query.query(Criteria.where("book").is(PREPARED_TEST_BOOK)),
+                BookComment.class
+            )
+                .size()
         );
     }
 

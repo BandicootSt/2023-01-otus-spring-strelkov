@@ -9,6 +9,7 @@ import ru.otus.homework8.strelkov.dto.AddBookRequestDto;
 import ru.otus.homework8.strelkov.exception.BookNotFoundException;
 import ru.otus.homework8.strelkov.service.AuthorService;
 import ru.otus.homework8.strelkov.service.BookService;
+import ru.otus.homework8.strelkov.service.BooksCommentsService;
 import ru.otus.homework8.strelkov.service.GenreService;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class BookServiceImpl implements BookService {
     private final BooksRepository booksRepository;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final BooksCommentsService booksCommentsService;
 
     @Override
     @Transactional
@@ -62,6 +64,29 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteBookById(String bookId) {
-        booksRepository.deleteById(bookId);
+        booksRepository
+            .findById(bookId)
+            .ifPresent(b -> {
+                    booksCommentsService.deleteAllCommentsByBook(b);
+                    booksRepository.deleteById(bookId);
+                }
+            );
     }
+
+    @Override
+    @Transactional
+    public void deleteAllBooksByAuthorId(String authorId) {
+        List<Book> books = booksRepository.findAllByAuthorId(authorId);
+        booksCommentsService.deleteAllCommentsByBooks(books);
+        booksRepository.deleteAll(books);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllBooksByGenreId(String genreId) {
+        List<Book> books = booksRepository.findAllByGenreId(genreId);
+        booksCommentsService.deleteAllCommentsByBooks(books);
+        booksRepository.deleteAll(books);
+    }
+
 }

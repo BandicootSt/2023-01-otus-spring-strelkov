@@ -11,17 +11,27 @@ import ru.otus.homework8.strelkov.domain.Book;
 import ru.otus.homework8.strelkov.domain.Genre;
 import ru.otus.homework8.strelkov.exception.BookNotFoundException;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataMongoTest
 class BooksRepositoryTest {
 
-    private static final Book PREPARED_TEST_BOOK = Book.builder()
+    private static final Book FIRST_PREPARED_TEST_BOOK = Book.builder()
         .id("1")
         .name("TestBook1")
         .author(new Author("1", "TestFirstName1", "TestLastName1", "TestPatronymic1"))
         .genre(new Genre("1", "TestGenre1"))
+        .build();
+
+    private static final Book SECOND_PREPARED_TEST_BOOK = Book.builder()
+        .id("2")
+        .name("TestBook2")
+        .author(new Author("2", "TestFirstName2", "TestLastName2", "TestPatronymic2"))
+        .genre(new Genre("2", "TestGenre2"))
         .build();
 
     @Autowired
@@ -33,9 +43,9 @@ class BooksRepositoryTest {
     @Test
     public void testFindByName() {
         assertThat(
-            booksRepository.findByName(PREPARED_TEST_BOOK.getName())
-                .orElseThrow(() -> new BookNotFoundException("Not found book by name: " + PREPARED_TEST_BOOK.getName())),
-            equalTo(PREPARED_TEST_BOOK)
+            booksRepository.findByName(FIRST_PREPARED_TEST_BOOK.getName())
+                .orElseThrow(() -> new BookNotFoundException("Not found book by name: " + FIRST_PREPARED_TEST_BOOK.getName())),
+            equalTo(FIRST_PREPARED_TEST_BOOK)
         );
     }
 
@@ -49,6 +59,14 @@ class BooksRepositoryTest {
                 )
                 .getName(),
             equalTo("NewTestBookName")
+        );
+    }
+
+    @Test
+    public void testFindAllByAuthorId() {
+        assertEquals(
+            List.of(SECOND_PREPARED_TEST_BOOK),
+            booksRepository.findAllByAuthorId(SECOND_PREPARED_TEST_BOOK.getAuthor().getId())
         );
     }
 }
