@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework8.strelkov.dao.AuthorsRepository;
+import ru.otus.homework8.strelkov.dao.BooksRepository;
 import ru.otus.homework8.strelkov.domain.Author;
 import ru.otus.homework8.strelkov.exception.AuthorNotFoundException;
 import ru.otus.homework8.strelkov.service.AuthorService;
-import ru.otus.homework8.strelkov.service.BookService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorsRepository authorsRepository;
-    private final BookService bookService;
+    private final BooksRepository booksRepository;
 
     @Override
     @Transactional
@@ -40,7 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteAuthorById(String authorId) {
-        bookService.deleteAllBooksByAuthorId(authorId);
+        booksRepository.deleteAllByAuthorId(authorId);
         authorsRepository.deleteById(authorId);
     }
 }

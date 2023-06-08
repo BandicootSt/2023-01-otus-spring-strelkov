@@ -8,4 +8,8 @@ import java.util.List;
 public interface BooksCommentsRepository extends MongoRepository<BookComment, String>, CustomBooksCommentsRepository {
 
     List<BookComment> findByBookId(String bookId);
+
+    void deleteAllCommentsByBookAuthorId(String authorId);
+
+    void deleteAllCommentsByBookGenreId(String genreId);
 }

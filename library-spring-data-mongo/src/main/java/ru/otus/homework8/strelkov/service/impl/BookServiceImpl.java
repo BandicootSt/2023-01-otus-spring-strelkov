@@ -76,17 +76,15 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteAllBooksByAuthorId(String authorId) {
-        List<Book> books = booksRepository.findAllByAuthorId(authorId);
-        booksCommentsService.deleteAllCommentsByBooks(books);
-        booksRepository.deleteAll(books);
+        booksCommentsService.deleteAllCommentsByBookAuthorId(authorId);
+        booksRepository.deleteAllByAuthorId(authorId);
     }
 
     @Override
     @Transactional
     public void deleteAllBooksByGenreId(String genreId) {
-        List<Book> books = booksRepository.findAllByGenreId(genreId);
-        booksCommentsService.deleteAllCommentsByBooks(books);
-        booksRepository.deleteAll(books);
+        booksCommentsService.deleteAllCommentsByBookGenreId(genreId);
+        booksRepository.deleteAllByGenreId(genreId);
     }
 
 }

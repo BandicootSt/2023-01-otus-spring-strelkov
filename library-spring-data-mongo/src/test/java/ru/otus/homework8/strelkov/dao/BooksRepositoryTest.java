@@ -11,7 +11,7 @@ import ru.otus.homework8.strelkov.domain.Book;
 import ru.otus.homework8.strelkov.domain.Genre;
 import ru.otus.homework8.strelkov.exception.BookNotFoundException;
 
-import java.util.List;
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -63,10 +63,14 @@ class BooksRepositoryTest {
     }
 
     @Test
-    public void testFindAllByAuthorId() {
+    public void testDeleteAllByAuthorId() {
+        booksRepository.deleteAllByAuthorId(FIRST_PREPARED_TEST_BOOK.getAuthor().getId());
         assertEquals(
-            List.of(SECOND_PREPARED_TEST_BOOK),
-            booksRepository.findAllByAuthorId(SECOND_PREPARED_TEST_BOOK.getAuthor().getId())
+            Collections.emptyList(),
+            mongoOperations.find(
+                Query.query(Criteria.where("author").is(FIRST_PREPARED_TEST_BOOK.getAuthor())),
+                Book.class
+            )
         );
     }
 }

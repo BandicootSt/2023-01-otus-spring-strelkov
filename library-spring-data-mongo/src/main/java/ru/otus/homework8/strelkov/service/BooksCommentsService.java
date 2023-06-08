@@ -20,5 +20,7 @@ public interface BooksCommentsService {
 
     void deleteAllCommentsByBook(Book book);
 
-    void deleteAllCommentsByBooks(List<Book> books);
+    void deleteAllCommentsByBookAuthorId(String authorId);
+
+    void deleteAllCommentsByBookGenreId(String genreId);
 }

@@ -3,10 +3,10 @@ package ru.otus.homework8.strelkov.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.homework8.strelkov.dao.BooksRepository;
 import ru.otus.homework8.strelkov.dao.GenresRepository;
 import ru.otus.homework8.strelkov.domain.Genre;
 import ru.otus.homework8.strelkov.exception.GenreNotFoundException;
-import ru.otus.homework8.strelkov.service.BookService;
 import ru.otus.homework8.strelkov.service.GenreService;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 public class GenreServiceImpl implements GenreService {
 
     private final GenresRepository genresRepository;
-    private final BookService bookService;
+    private final BooksRepository booksRepository;
 
     @Override
     @Transactional
@@ -40,7 +40,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public void deleteGenreById(String genreId) {
-        bookService.deleteAllBooksByGenreId(genreId);
+        booksRepository.deleteAllByGenreId(genreId);
         genresRepository.deleteById(genreId);
     }
 }

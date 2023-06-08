@@ -73,14 +73,14 @@ class BooksCommentsRepositoryTest {
     }
 
     @Test
-    public void testDeleteAllByBookId() {
-        commentsRepo.deleteAllByBooks(List.of(PREPARED_TEST_BOOK));
+    public void testDeleteAllCommentByBookAuthorId() {
+        commentsRepo.deleteAllCommentsByBookAuthorId(PREPARED_TEST_BOOK.getAuthor().getId());
         assertEquals(
             0,
             mongoOperations.find(
-                Query.query(Criteria.where("book").is(PREPARED_TEST_BOOK)),
-                BookComment.class
-            )
+                    Query.query(Criteria.where("book").is(PREPARED_TEST_BOOK)),
+                    BookComment.class
+                )
                 .size()
         );
     }
