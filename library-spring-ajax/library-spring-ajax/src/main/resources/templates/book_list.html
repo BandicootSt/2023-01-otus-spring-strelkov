@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Books</title>
+    <script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 300px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .action {
+            padding: 5px;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+
+    </style>
+    <script>
+        function deleteBook(bookId) {
+            const id = { id: bookId}
+            fetch(
+                "api/books",
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                body: JSON.stringify(id)
+                }
+            )
+            .then(response => viewAllBooks())
+        };
+    </script>
+    <script>
+        function outputBook(book) {
+            $('tbody').append(`
+                    <tr>
+                        <td>${book.name}</td>
+                        <td>${book.author.firstName}</td>
+                        <td>${book.genre.name}</td>
+                        <td><div class="action">
+                <a href="/books/edit?id=${book.id}">
+                    <button>Edit</button>
+                </a>
+            </div>
+            <div class="action">
+                <a href="/comments?bookId=${book.id}">
+                    <button>View comments</button>
+                </a>
+            </div>
+            <div class="action">
+                <button type="button" onclick="deleteBook(${book.id})" class="link-button">Delete</button>
+            </div></td>
+                    </tr>
+                `)
+        }
+    </script>
+    <script>
+        function outputBooks(books) {
+            books.forEach(function (book) {
+                outputBook(book)
+            });
+        };
+    </script>
+    <script>
+        function fetchBooks() {
+            fetch('api/books')
+                .then(response => response.json())
+                .then(books => outputBooks(books))
+        };
+    </script>
+    <script>
+        function searchBook() {
+            const bookNameInput = document.getElementById("book-name-input")
+            fetch("api/books/book?name=" + bookNameInput.value)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return response.text().then(text => { throw new Error(text) })
+                })
+                .then(book => outputBookSearchResult(book))
+                .catch(function (err) {
+                    console.log(err);
+                    alert(err);
+           });
+        }
+    </script>
+    <script>
+        function viewAllBooks() {
+            $("#books-table-body").empty();
+            fetchBooks();
+        }
+    </script>
+    <script>
+        function outputBookSearchResult(book) {
+            $("#books-table-body").empty();
+            outputBook(book);
+        }
+    </script>
+</head>
+<body>
+
+<h3>Library</h3>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="books-table-body">
+        <script>
+            fetchBooks();
+        </script>
+    </tbody>
+</table>
+<div class="action">
+    <form id="add-form" action = "/books/add" method="get">
+        <button type="submit" class="link-button">Add new</button>
+    </form>
+</div>
+<div class="action">
+        <input id="book-name-input" placeholder="Enter book Name" type="text"/>
+        <button type="button" onclick="searchBook()" class="link-button">Search</button>
+</div>
+<div class="action">
+    <button type="button" onclick="viewAllBooks()" class="link-button">View all books</button>
+</div>
+<div class="action">
+    <a href="/authors">
+        <button>View all authors</button>
+    </a>
+</div>
+<div class="action">
+    <a href="/genres">
+        <button>View all genres</button>
+    </a>
+</div>
+</body>
+</html>
